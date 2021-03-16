@@ -10,7 +10,7 @@
       name = "lrt-backend";
       buildInputs = with pkgs.python3Packages; [
         python
-        flask
+        virtualenv
       ];
     };
   };
