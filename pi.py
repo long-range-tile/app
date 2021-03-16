@@ -8,4 +8,4 @@ cycled_iterator = itertools.cycle(one_cycle)
 def get_data():
     """ Returns a dictionary to be converted to JSON for the frontend """
     global cycled_iterator
-    return {'data':'hello, world', 'counter': next(cycled_iterator)}
+    return {'counter': next(cycled_iterator)}
