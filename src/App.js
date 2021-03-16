@@ -6,7 +6,7 @@ const WS_ENDPOINT = "ws://127.0.0.1:5000";
 const socket = socketIOClient(WS_ENDPOINT);
 
 function App() {
-  const [response, setResponse] = useState("Request some data.");
+  const [response, setResponse] = useState(null);
 
   useEffect(() => {
     socket.on("NewData", data => {
@@ -18,15 +18,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Data from server:</h1>
-        <button
-          onClick={() => {
-            setResponse("Loading...");
-            socket.emit("DataRequest");
-          }}
-        >
-          Send message
-        </button>
-        <div><pre>{JSON.stringify(response, 2)}</pre></div>
+        <div><pre>{response ? JSON.stringify(response, 2) : 'Waiting for initial data...'}</pre></div>
       </header>
     </div>
   );
