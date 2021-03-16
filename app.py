@@ -29,4 +29,6 @@ def run_timer():
 
 if __name__ == '__main__':
     eventlet.spawn(run_timer)
-    eventlet.spawn(socketio.run, app).wait()
+    t = eventlet.spawn(socketio.run, app)
+    print('Server started.')
+    t.wait()
