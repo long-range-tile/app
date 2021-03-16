@@ -19,11 +19,15 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Data from server:</h1>
-        <div align="left"><pre>{response ? JSON.stringify(response, null, 2) : 'Waiting for initial data...'}</pre></div>
-        {response && <GaugeChart
-          percent={(response.counter / 100.0)}
-          animate={false}
-        />}
+        <div align="left">
+          <pre>{response ? JSON.stringify(response, null, 2) : 'Waiting for initial data...'}</pre>
+        </div>
+        <div id="chart">
+          {response && <GaugeChart
+            percent={(response.counter / 100.0)}
+            animate={false}
+          />}
+        </div>
       </header>
     </div>
   );
