@@ -1,4 +1,5 @@
 import os
+import sys
 import eventlet
 
 import pi
@@ -22,7 +23,7 @@ def emit_current_data():
 
 @socketio.on('gps_data')
 def gps_data(data):
-    print('gps', data)
+    print('gps', data, file=sys.stderr)
     pass
 
 def run_timer():
