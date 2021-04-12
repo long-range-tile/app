@@ -6,16 +6,36 @@ import GaugeChart from 'react-gauge-chart';
 const WS_ENDPOINT = "ws://127.0.0.1:5000";
 const socket = io(WS_ENDPOINT);
 
-async function sendGpsData() {
-  navigator.geolocation.getCurrentPosition(function ({ coords, timestamp }) {
-    socket.emit('gps_data', {
-      coords: {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      },
-      timestamp,
-    });
-  });
+function parsePosition({ coords, timestamp }) {
+  return {
+    coords: {
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+      accuracy: coords.accuracy,
+      heading: coords.heading,
+      altitude: coords.altitude,
+      altitudeAccuracy: coords.altitudeAccuracy,
+    },
+    timestamp,
+  };
+}
+
+function sendPosition(position) {
+  const gpsData = parsePosition(position);
+  socket.emit('gps_data', gpsData);
+}
+
+function sendCurrentGpsData() {
+  navigator.geolocation.getCurrentPosition(sendPosition);
+}
+
+function setupWatcher() {
+  const watchID = navigator.geolocation.watchPosition(sendPosition);
+  console.log('setup watcher!');
+  return () => {
+    navigator.geolocation.clearWatch(watchID);
+    console.log('cleaned up watcher!');
+  };
 }
 
 function App() {
@@ -25,6 +45,11 @@ function App() {
     socket.on("NewData", data => {
       setResponse(data);
     });
+  }, []);
+
+  useEffect(() => {
+    const clearWatcher = setupWatcher();
+    return clearWatcher;
   }, []);
 
   return (
@@ -39,11 +64,6 @@ function App() {
             percent={(response.counter / 100.0)}
             animate={false}
           />}
-        </div>
-        <div>
-          <button onClick={sendGpsData}>
-            Send GPS data
-          </button>
         </div>
       </header>
     </div>
