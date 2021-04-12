@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 import './App.css';
 import GaugeChart from 'react-gauge-chart';
 
 const WS_ENDPOINT = "ws://127.0.0.1:5000";
-const socket = socketIOClient(WS_ENDPOINT);
+const socket = io(WS_ENDPOINT);
 
 function App() {
   const [response, setResponse] = useState(null);
