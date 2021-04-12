@@ -20,6 +20,11 @@ def index():
 def emit_current_data():
     socketio.emit('NewData', pi.get_data())
 
+@socketio.on('gps_data')
+def gps_data(data):
+    print('gps', data)
+    pass
+
 def run_timer():
     while True:
         eventlet.spawn(emit_current_data).wait()
