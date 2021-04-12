@@ -26,7 +26,8 @@ def run_timer():
         eventlet.sleep(UPDATE_INTERVAL_SEC)
 
 if __name__ == '__main__':
+    port = 5000
     eventlet.spawn(run_timer)
-    t = eventlet.spawn(socketio.run, app)
-    print('Server started.')
+    t = eventlet.spawn(socketio.run, app, port=port)
+    print(f'Server started on port {port}.')
     t.wait()
