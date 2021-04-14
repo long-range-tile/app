@@ -10,16 +10,9 @@ import pi
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 
-FRONTEND_ORIGINS = [
-    "http://127.0.0.1:3000",
-    "http://localhost:3000",
-    "http://127.0.0.1:5000",
-    "http://localhost:5000",
-]
-
 app = Flask(__name__, static_folder='./static/static',
             template_folder='./static')
-socketio = SocketIO(app, cors_allowed_origins=FRONTEND_ORIGINS)
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 
 @app.route('/')
@@ -52,4 +45,4 @@ if __name__ == '__main__':
         target=pi.read_fifo_until_closed, args=['/tmp/fifo1'])
     fifo_thread.start()
     logging.info('Server started on port %d.', port)
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0', port=port)
