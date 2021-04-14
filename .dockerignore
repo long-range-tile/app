@@ -1,2 +1,6 @@
 /node_modules/
 /api/venv/
+/api/gps.txt
+/api/bt.txt
+
+/data

@@ -5,6 +5,7 @@ import json
 import logging
 from signal import signal, SIGINT
 import time
+from pathlib import Path
 
 import pi
 
@@ -28,7 +29,9 @@ def connect():
 
 @socketio.on('gps_data')
 def gps_data(data):
-    with open('gps.txt', 'a') as f:
+    data_dir = Path(os.getenv('DATA_DIR') or "./")
+    gps_f = str((data_dir / 'gps.txt').resolve())
+    with open(gps_f, 'a') as f:
         f.write(json.dumps(data))
         f.write('\n')
     socketio.emit('got_gps', time.time()*1000)
