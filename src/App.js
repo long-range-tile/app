@@ -31,18 +31,52 @@ function sendCurrentGpsData() {
 
 function setupWatcher() {
   const watchID = navigator.geolocation.watchPosition(sendPosition);
-  console.log('setup watcher!');
   return () => {
     navigator.geolocation.clearWatch(watchID);
-    console.log('cleaned up watcher!');
   };
+}
+
+function diffToNowSec(stamp) {
+    const d = new Date(stamp);
+    const now = new Date();
+    const diff = now - d;
+    return diff / 1000;
+}
+
+function DispResponse({ response }) {
+  const [ago, setAgo] = useState(0);
+  useEffect(() => {
+    setAgo(diffToNowSec(response));
+    const t = setInterval(() => {
+      setAgo(diffToNowSec(response));
+    }, 100);
+    return () => {
+      clearInterval(t);
+    };
+  }, [response]);
+
+  if (!response) {
+    return 'Waiting for initial response...';
+  }
+  let color = 'red';
+  if (ago < 20) {
+    color = 'yellow';
+  }
+  if (ago < 10) {
+    color = 'green';
+  }
+  return (
+    <p style={{color}}>
+      GPS data received {ago}s ago
+    </p>
+  );
 }
 
 function App() {
   const [response, setResponse] = useState(null);
 
   useEffect(() => {
-    socket.on("NewData", data => {
+    socket.on("got_gps", data => {
       setResponse(data);
     });
   }, []);
@@ -55,16 +89,17 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Data from server:</h1>
         <div align="left">
-          <pre>{response ? JSON.stringify(response, null, 2) : 'Waiting for initial data...'}</pre>
+          <pre>
+            <DispResponse response={response} />
+          </pre>
         </div>
-        <div id="chart">
+        {/* <div id="chart">
           {response && <GaugeChart
             percent={(response.counter / 100.0)}
             animate={false}
           />}
-        </div>
+        </div> */}
       </header>
     </div>
   );

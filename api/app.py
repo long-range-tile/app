@@ -4,6 +4,7 @@ import threading
 import json
 import logging
 from signal import signal, SIGINT
+import time
 
 import pi
 
@@ -30,6 +31,7 @@ def gps_data(data):
     with open('gps.txt', 'a') as f:
         f.write(json.dumps(data))
         f.write('\n')
+    socketio.emit('got_gps', time.time()*1000)
 
 
 def sigint_handler(signal_received, frame):
